@@ -4,22 +4,30 @@
  */
 
 import express from "express";
+import cors from "cors"; // Ensure cors is imported
 import multer from "multer";
 import { extractMetadata } from "./src/extract-metadata.js";
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
 
-// ✅ Enable CORS for all origins or limit to your Vercel frontend
+// Enable CORS for all origins or limit to your Vercel frontend
 app.use(
   cors({
-    origin: ["https://vibesync-neon.vercel.app"], // your frontend
-    methods: ["GET", "POST"],
+    origin: ["https://vibesync-neon.vercel.app"],
+    methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type"],
   })
 );
 
-// --- Routes --- //
+// Explicitly handle OPTIONS requests
+app.options("/api/extract-metadata", cors(), (req, res) => {
+  res.status(200).send();
+});
+
+// Middleware to parse JSON and form-data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Root route (for testing)
 app.get("/", (req, res) => {
@@ -42,6 +50,6 @@ app.post("/api/extract-metadata", upload.single("file"), async (req, res) => {
   }
 });
 
-// --- Start Server --- //
+// Start Server
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
