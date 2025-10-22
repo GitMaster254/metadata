@@ -10,11 +10,14 @@ import { extractMetadata } from "./src/extract-metadata.js";
 const app = express();
 const upload = multer({ dest: "uploads/" });
 
-//Enable CORS for my frontend
-app.use(cors({
-  origin: "*", // you can replace "*" with your frontend domain later for security
-  methods: ["GET", "POST"],
-}));
+// ✅ Enable CORS for all origins or limit to your Vercel frontend
+app.use(
+  cors({
+    origin: ["https://vibesync-neon.vercel.app"], // your frontend
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
 
 // --- Routes --- //
 
