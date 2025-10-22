@@ -10,6 +10,12 @@ import { extractMetadata } from "./src/extract-metadata.js";
 const app = express();
 const upload = multer({ dest: "uploads/" });
 
+//Enable CORS for my frontend
+app.use(cors({
+  origin: "*", // you can replace "*" with your frontend domain later for security
+  methods: ["GET", "POST"],
+}));
+
 // --- Routes --- //
 
 // Root route (for testing)
