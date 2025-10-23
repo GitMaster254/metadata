@@ -14,7 +14,7 @@ const upload = multer({ dest: "uploads/" });
 // Enable CORS for all origins or limit to your Vercel frontend
 app.use(
   cors({
-    origin: ["https://vibesync-neon.vercel.app"],
+    origin: ["https://vibesync-neon.vercel.app","*"], // Adjust this to your frontend URL
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type"],
   })
