@@ -12,16 +12,16 @@ const app = express();
 const upload = multer({ dest: "uploads/" });
 
 // Enable CORS for all origins or limit to your Vercel frontend
-app.use(
-  cors({
-    origin: ["https://vibesync-neon.vercel.app","*"], // Adjust this to your frontend URL
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*"); // Or your Vercel URL
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") return res.sendStatus(200); // handle preflight
+  next();
+});
 
 // Explicitly handle OPTIONS requests
-app.options("/api/extract-metadata", cors(), (req, res) => {
+app.options("/api/extract-metadata", (req, res) => {
   res.status(200).send();
 });
 
