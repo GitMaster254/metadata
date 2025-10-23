@@ -7,6 +7,7 @@ import express from "express";
 import cors from "cors"; // Ensure cors is imported
 import multer from "multer";
 import { extractMetadata } from "./src/extract-metadata.js";
+import pingRoute  from "./src/ping.js";
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -33,6 +34,9 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
   res.send("🎵 Metadata Extraction API is running!");
 });
+
+//attach ping route
+app.use("/api/ping", pingRoute);
 
 // Upload and extract metadata
 app.post("/api/extract-metadata", upload.any(), async (req, res) => {
