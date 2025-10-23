@@ -35,15 +35,23 @@ app.get("/", (req, res) => {
 });
 
 // Upload and extract metadata
-app.post("/api/extract-metadata", upload.single("file"), async (req, res) => {
+app.post("/api/extract-metadata", upload.any(), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ success: false, message: "No file uploaded" });
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ success: false, message: "No files uploaded" });
     }
 
-    const metadata = await extractMetadata(req.file.path);
+    const results = await Promise.all(
+      req.files.map(async (file) => {
+        const metadata = await extractMetadata(file.path);
+        return {
+          filename: file.originalname,
+          metadata,
+        };
+      })
+    );
 
-    res.json({ success: true, metadata });
+    res.json({ success: true, files: results });
   } catch (error) {
     console.error("❌ Metadata extraction failed:", error);
     res.status(500).json({ success: false, message: error.message });
