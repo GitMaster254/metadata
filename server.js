@@ -1,8 +1,9 @@
 // server.js
-const express = require('express');
-const cors = require('cors');
-const fetch = require('node-fetch');
-require('dotenv').config();
+import express from "express";
+import cors from "cors";
+import fetch from 'node-fetch';
+import dotenv from 'dotenv';
+import pingRoute  from "./src/ping.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -14,10 +15,11 @@ app.use(cors({
 }));
 app.use(express.json());
 
+dotenv.config();
 // Spotify API configuration
 const SPOTIFY_CONFIG = {
-  clientId: process.env.SPOTIFY_CLIENT_ID,
-  clientSecret: process.env.SPOTIFY_CLIENT_SECRET
+  clientId: process.env.VITE_SPOTIFY_CLIENT_ID,
+  clientSecret: process.env.VITE_SPOTIFY_CLIENT_SECRET
 };
 
 // Token management
@@ -87,6 +89,8 @@ async function spotifyApiProxy(endpoint) {
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Spotify Proxy Server is running' });
 });
+//Ping server
+app.use("/api/ping", pingRoute);
 
 // Get featured tracks
 app.get('/api/featured-tracks', async (req, res) => {
